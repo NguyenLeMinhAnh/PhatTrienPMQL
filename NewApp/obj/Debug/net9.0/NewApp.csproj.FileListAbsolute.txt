@@ -1,0 +1,15 @@
+D:\PhatTrienPMQL\NewApp\bin\Debug\net9.0\NewApp.exe
+D:\PhatTrienPMQL\NewApp\bin\Debug\net9.0\NewApp.deps.json
+D:\PhatTrienPMQL\NewApp\bin\Debug\net9.0\NewApp.runtimeconfig.json
+D:\PhatTrienPMQL\NewApp\bin\Debug\net9.0\NewApp.dll
+D:\PhatTrienPMQL\NewApp\bin\Debug\net9.0\NewApp.pdb
+D:\PhatTrienPMQL\NewApp\obj\Debug\net9.0\NewApp.GeneratedMSBuildEditorConfig.editorconfig
+D:\PhatTrienPMQL\NewApp\obj\Debug\net9.0\NewApp.AssemblyInfoInputs.cache
+D:\PhatTrienPMQL\NewApp\obj\Debug\net9.0\NewApp.AssemblyInfo.cs
+D:\PhatTrienPMQL\NewApp\obj\Debug\net9.0\NewApp.csproj.CoreCompileInputs.cache
+D:\PhatTrienPMQL\NewApp\obj\Debug\net9.0\NewApp.sourcelink.json
+D:\PhatTrienPMQL\NewApp\obj\Debug\net9.0\NewApp.dll
+D:\PhatTrienPMQL\NewApp\obj\Debug\net9.0\refint\NewApp.dll
+D:\PhatTrienPMQL\NewApp\obj\Debug\net9.0\NewApp.pdb
+D:\PhatTrienPMQL\NewApp\obj\Debug\net9.0\NewApp.genruntimeconfig.cache
+D:\PhatTrienPMQL\NewApp\obj\Debug\net9.0\ref\NewApp.dll
