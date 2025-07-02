@@ -1,14 +1,18 @@
+using DemoMVC.Models;
 using Microsoft.AspNetCore.Mvc;
 namespace DemoMVC.Controllers
 {
     public class EmployeeController : Controller
     {
-        public ActionResult Index()
+        public ActionResult Demo()
         {
             return View();
         }
-        public ActionResult Details()
+        [HttpPost]
+        public ActionResult Demo(Employee em)
         {
+            string infoEmployee = em.EmployeeId + "-" + em.Age;
+            ViewBag.InfoEmployee = infoEmployee;
             return View();
         }
     }
