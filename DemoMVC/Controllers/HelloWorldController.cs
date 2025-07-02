@@ -6,11 +6,8 @@ namespace DemoMVC.Controllers
     {
         public IActionResult Index()
         {
+            ViewBag.hoTen = "Nguyễn Lê Minh Anh - 2221050490";
             return View();
-        }
-        public string Wellcome()
-        {
-            return "This is the Wellcome action method...";
         }
     }
 }
