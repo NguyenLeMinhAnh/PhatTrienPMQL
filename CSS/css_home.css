@@ -1,0 +1,97 @@
+body {
+    margin: 0;
+}
+.w3-container{
+    background-color: #009688;
+    color: white;
+}
+.w3-container-1 {
+    background-color: white;
+    color: black;
+}
+.color {
+    border: 1px solid red;
+    background-color: bisque;
+    color: red;
+    text-align: center;
+    padding: 15px;
+}
+.w3-container h1{
+    margin: 0;
+}
+
+.card-content {
+  width: 300px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  background-color: white;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-content img {
+    width: 300px;
+    border-radius: 12px;
+    margin-bottom: 0;
+}
+
+.font1 {
+    font-size: small;
+    font-weight: bold;
+}
+.font2 {
+    font-size: medium;
+}
+.font3{
+    font-size: large;
+}
+
+.text1 {
+    text-align: left;
+    background-color: #009688;
+    color: white;
+    padding: 10px;
+}
+.text2 {
+    text-align: right;
+}
+
+.display {
+    display: flex;
+}
+.display1 {
+    background-color: bisque;
+}
+.display2 {
+    background-color: aquamarine;
+}
+
+.table .table1 {
+    border: 1px solid black;
+    background-color: antiquewhite;
+}
+
+.list .list1 {
+    display: flex;
+    color: blue;
+}
+
+.input {
+    background-color: #009688;
+    padding: 15px;
+    color: white;
+    font-size: xx-large;
+}
+input {
+    width: 50%;
+    height: 30px;
+}
+button {
+    margin-top: 50px;
+    width: 10%;
+    padding: 10px;
+    background-color: #009688;
+    color: white;
+}
+button:hover{
+    background-color: black;
+}
