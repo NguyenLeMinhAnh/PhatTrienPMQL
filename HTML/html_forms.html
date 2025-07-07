@@ -1,0 +1,44 @@
+<html>
+    <head></head>
+    <body>
+        <form oninput="x.value=parseInt(a.value)+parseInt(b.value)">
+            <fieldset>
+                <legend>Information:</legend>
+                <label>Full Name:</label>
+                <input type="text" name="fullname"> <br><br>
+                <label>Address:</label>
+                <input type="text" name="address">
+            </fieldset>
+
+            <p>Choose your favorite Web language:</p>
+            <input type="radio" name="fav_language"> HTML
+            <input type="radio" name="fav_language"> CSS
+            <input type="radio" name="fav_language"> JavaScript <br>
+            
+            <p>A form with checkboxes:</p>
+            <input type="checkbox" name="vehicle1"> I have a bike <br>
+            <input type="checkbox" name="vehicle1"> I have a car <br> 
+            <input type="checkbox" name="vehicle1"> I have a boat <br>
+
+            <p>Select:</p>
+            <select id="cars" name="cars">
+                <option value="volvo">Volvo</option>
+                <option value="saab">Saab</option>
+                <option value="fiat">Fiat</option>
+                <option value="audi">Audi</option>
+            </select>
+
+            <p>Comment:</p>
+            <textarea name="message">This is comment...</textarea> <br><br>
+
+                <input type="range" name="a" id="a" value="50"> 100 +
+                <input type="number" name="b" id="b" value="50"> =
+                <output name="x" for="a b"></output> <br><br>
+
+
+            <button type="button" onclick="alert('I am Nguyen Le Minh Anh')">Click Me!</button> <br><br>
+
+            <input type="submit" value="submit">
+        </form>
+    </body>
+</html>
