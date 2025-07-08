@@ -22,7 +22,7 @@ namespace DemoMVC.Controllers
         // GET: DaiLy
         public async Task<IActionResult> Index()
         {
-            return View(await _context.DaiLys.ToListAsync());
+            return View(await _context.DaiLy.ToListAsync());
         }
 
         // GET: DaiLy/Details/5
@@ -33,7 +33,7 @@ namespace DemoMVC.Controllers
                 return NotFound();
             }
 
-            var daiLy = await _context.DaiLys
+            var daiLy = await _context.DaiLy
                 .FirstOrDefaultAsync(m => m.MaDaiLy == id);
             if (daiLy == null)
             {
@@ -73,7 +73,7 @@ namespace DemoMVC.Controllers
                 return NotFound();
             }
 
-            var daiLy = await _context.DaiLys.FindAsync(id);
+            var daiLy = await _context.DaiLy.FindAsync(id);
             if (daiLy == null)
             {
                 return NotFound();
@@ -124,7 +124,7 @@ namespace DemoMVC.Controllers
                 return NotFound();
             }
 
-            var daiLy = await _context.DaiLys
+            var daiLy = await _context.DaiLy
                 .FirstOrDefaultAsync(m => m.MaDaiLy == id);
             if (daiLy == null)
             {
@@ -139,10 +139,10 @@ namespace DemoMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var daiLy = await _context.DaiLys.FindAsync(id);
+            var daiLy = await _context.DaiLy.FindAsync(id);
             if (daiLy != null)
             {
-                _context.DaiLys.Remove(daiLy);
+                _context.DaiLy.Remove(daiLy);
             }
 
             await _context.SaveChangesAsync();
@@ -151,7 +151,7 @@ namespace DemoMVC.Controllers
 
         private bool DaiLyExists(string id)
         {
-            return _context.DaiLys.Any(e => e.MaDaiLy == id);
+            return _context.DaiLy.Any(e => e.MaDaiLy == id);
         }
     }
 }

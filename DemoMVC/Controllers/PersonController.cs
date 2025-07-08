@@ -35,8 +35,7 @@ namespace DemoMVC.Controllers
                 return NotFound();
             }
 
-            var person = await _context.Persons
-                .FirstOrDefaultAsync(m => m.PersonId == id);
+            var person = await _context.Persons.FirstOrDefaultAsync(m => m.PersonId == id);
             if (person == null)
             {
                 return NotFound();

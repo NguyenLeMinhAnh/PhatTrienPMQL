@@ -2,6 +2,7 @@
 using DemoMVC.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DemoMVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250708091405_InitDB")]
+    partial class InitDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.6");
@@ -43,7 +46,7 @@ namespace DemoMVC.Migrations
 
                     b.HasIndex("HeThongPhanPhoiMaHTPP");
 
-                    b.ToTable("DaiLy");
+                    b.ToTable("DaiLys");
                 });
 
             modelBuilder.Entity("DemoMVC.Models.HeThongPhanPhoi", b =>
@@ -56,7 +59,7 @@ namespace DemoMVC.Migrations
 
                     b.HasKey("MaHTPP");
 
-                    b.ToTable("HeThongPhanPhoi");
+                    b.ToTable("HeThongPhanPhois");
                 });
 
             modelBuilder.Entity("DemoMVC.Models.Person", b =>
@@ -67,6 +70,11 @@ namespace DemoMVC.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -75,7 +83,9 @@ namespace DemoMVC.Migrations
 
                     b.ToTable("Persons");
 
-                    b.UseTptMappingStrategy();
+                    b.HasDiscriminator().HasValue("Person");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("DemoMVC.Models.Employee", b =>
@@ -88,7 +98,7 @@ namespace DemoMVC.Migrations
                     b.Property<string>("EmployeeId")
                         .HasColumnType("TEXT");
 
-                    b.ToTable("Emloyee");
+                    b.HasDiscriminator().HasValue("Employee");
                 });
 
             modelBuilder.Entity("DemoMVC.Models.DaiLy", b =>
@@ -98,15 +108,6 @@ namespace DemoMVC.Migrations
                         .HasForeignKey("HeThongPhanPhoiMaHTPP");
 
                     b.Navigation("HeThongPhanPhoi");
-                });
-
-            modelBuilder.Entity("DemoMVC.Models.Employee", b =>
-                {
-                    b.HasOne("DemoMVC.Models.Person", null)
-                        .WithOne()
-                        .HasForeignKey("DemoMVC.Models.Employee", "PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

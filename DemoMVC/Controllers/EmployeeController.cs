@@ -22,7 +22,7 @@ namespace DemoMVC.Controllers
         // GET: Employee
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Employees.ToListAsync());
+            return View(await _context.Employee.ToListAsync());
         }
 
         // GET: Employee/Details/5
@@ -33,7 +33,7 @@ namespace DemoMVC.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees.FirstOrDefaultAsync(m => m.PersonId == id);
+            var employee = await _context.Employee.FirstOrDefaultAsync(m => m.PersonId == id);
             if (employee == null)
             {
                 return NotFound();
@@ -57,7 +57,6 @@ namespace DemoMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                 employee.PersonId = Guid.NewGuid().ToString();
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -73,7 +72,7 @@ namespace DemoMVC.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.PersonId == id);
+            var employee = await _context.Employee.FirstOrDefaultAsync(e => e.PersonId == id);
 
             if (employee == null)
             {
@@ -125,7 +124,7 @@ namespace DemoMVC.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees
+            var employee = await _context.Employee
                 .FirstOrDefaultAsync(m => m.PersonId == id);
             if (employee == null)
             {
@@ -140,11 +139,11 @@ namespace DemoMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.PersonId == id);
+            var employee = await _context.Employee.FirstOrDefaultAsync(e => e.PersonId == id);
 
             if (employee != null)
             {
-                _context.Employees.Remove(employee);
+                _context.Employee.Remove(employee);
             }
 
             await _context.SaveChangesAsync();
@@ -153,7 +152,7 @@ namespace DemoMVC.Controllers
 
         private bool EmployeeExists(string id)
         {
-            return _context.Employees.Any(e => e.PersonId == id);
+            return _context.Employee.Any(e => e.PersonId == id);
         }
     }
 }
