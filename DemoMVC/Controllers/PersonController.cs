@@ -12,6 +12,7 @@ namespace DemoMVC.Controllers
 {
     public class PersonController : Controller
     {
+        // private readonly AutoGenerateId autoGenerateId;
         private readonly ApplicationDbContext _context;
 
         public PersonController(ApplicationDbContext context)
@@ -45,8 +46,10 @@ namespace DemoMVC.Controllers
         }
 
         // GET: Person/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var generator = new AutoGenerateId(_context);
+            ViewBag.NewPersonId = await generator.GeneratePersonIdAsync();
             return View();
         }
 
@@ -55,14 +58,19 @@ namespace DemoMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PersonId,FullName,Address")] Person person)
+        public async Task<IActionResult> Create([Bind("FullName,Email,Address")] Person person)
         {
+            var generator = new AutoGenerateId(_context);
             if (ModelState.IsValid)
             {
+                person.PersonId = await generator.GeneratePersonIdAsync();
+
                 _context.Add(person);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.NewPersonId = await generator.GeneratePersonIdAsync();
             return View(person);
         }
 
@@ -87,7 +95,7 @@ namespace DemoMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("PersonId,FullName,Address")] Person person)
+        public async Task<IActionResult> Edit(string id, [Bind("PersonId,FullName,Email,Address")] Person person)
         {
             if (id != person.PersonId)
             {

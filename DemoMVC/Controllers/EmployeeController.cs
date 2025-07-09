@@ -53,10 +53,24 @@ namespace DemoMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EmployeeId,Age,PersonId,FullName,Address")] Employee employee)
+        public async Task<IActionResult> Create([Bind("EmployeeId,Age,FullName,Email,Address")] Employee employee)
         {
             if (ModelState.IsValid)
             {
+                var last = await _context.Employee
+                .OrderByDescending(e => e.PersonId) //Sắp xếp các PersonId từ lớn đến nhỏ
+                .Select(e => e.PersonId) //Chọn cột PersonId
+                .FirstOrDefaultAsync(); //Lấy PersonId lớn nhất
+
+                int next = 1;
+                if (!string.IsNullOrEmpty(last) && last.Length >= 4)
+                {
+                    int.TryParse(last.Substring(1), out next);
+                    next++;
+                }
+
+                employee.PersonId = "P" + next.ToString("D4");
+
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -86,7 +100,7 @@ namespace DemoMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("EmployeeId,Age,PersonId,FullName,Address")] Employee employee)
+        public async Task<IActionResult> Edit(string id, [Bind("EmployeeId,Age,PersonId,FullName,Email,Address")] Employee employee)
         {
             if (id != employee.PersonId)
             {
