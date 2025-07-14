@@ -1,32 +1,28 @@
 using DemoMVC.Data;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace DemoMVC.Models
 {
     public class AutoGenerateId
     {
-        private readonly ApplicationDbContext _context;
-
-        public AutoGenerateId(ApplicationDbContext context)
+        public string GenerateId(string inputID)
         {
-            _context = context;
-        }
-
-        public async Task<string> GeneratePersonIdAsync()
-        {
-            var last = await _context.Persons
-                .OrderByDescending(p => p.PersonId) //Sắp xếp PersonId từ lớn đến bé
-                .Select(p => p.PersonId) //Chọn cột PersonId
-                .FirstOrDefaultAsync(); //Chọn PersonId lớn nhất
-
-            int next = 1;
-            if (!string.IsNullOrEmpty(last) && last.Length >= 5) //Chỉ đúng nếu "last" có giá trị và độ dài lớn hơn hoặc bằng 4
+            //STD008
+            var match = System.Text.RegularExpressions.Regex.Match(inputID, @"^(?<prefix>[A-Za-z]+)(?<number>\d+)$");
+            if (!match.Success)
             {
-                int.TryParse(last.Substring(1), out next);
-                next++;
+                throw new ArgumentException("Invalid id format");
             }
-
-            return "P" + next.ToString("D4");
+            string prefix = match.Groups["prefix"].Value;
+            //STD
+            string numberPart = match.Groups["number"].Value;
+            //008
+            int number = int.Parse(numberPart) + 1;
+            //9
+            string newNumberPart = number.ToString().PadLeft(numberPart.Length, '0');
+            //STD009
+            return prefix + newNumberPart;
         }
     }
 }

@@ -46,11 +46,23 @@ namespace DemoMVC.Controllers
         }
 
         // GET: Person/Create
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
-            var generator = new AutoGenerateId(_context);
-            ViewBag.NewPersonId = await generator.GeneratePersonIdAsync();
-            return View();
+            AutoGenerateId autoGenerateId = new AutoGenerateId();
+
+            // Lấy ra bản ghi mới nhất của Person
+            var person = _context.Persons.OrderByDescending(p => p.PersonId).FirstOrDefault();
+            // Nếu person == null thi gan PersonId = P0000
+            var personId = person == null ? "P0000" : person.PersonId;
+            // Gọi tới phương thức sinh id tự động
+            var newPersonId = autoGenerateId.GenerateId(personId);
+            var newPerson = new Person
+            {
+                PersonId = newPersonId,
+                FullName = string.Empty,
+                Email = string.Empty,
+            };
+            return View(newPerson);
         }
 
         // POST: Person/Create
@@ -58,20 +70,30 @@ namespace DemoMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FullName,Email,Address")] Person person)
+
+        public async Task<IActionResult> Create([Bind("PersonID,FullName,Email,Address")] Person person)
         {
-            var generator = new AutoGenerateId(_context);
-            if (ModelState.IsValid)
-            {
-                person.PersonId = await generator.GeneratePersonIdAsync();
+            if (string.IsNullOrEmpty(person.PersonId))
+                {
+                    // Gán lại mã mới nếu bị null (phòng trường hợp người dùng không nhập được)
+                    var last = await _context.Persons
+                        .OrderByDescending(p => p.PersonId)
+                        .Select(p => p.PersonId)
+                        .FirstOrDefaultAsync();
 
-                _context.Add(person);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+                    var lastId = last ?? "P0000";
+                    var autoGen = new AutoGenerateId();
+                    person.PersonId = autoGen.GenerateId(lastId);
+                }
 
-            ViewBag.NewPersonId = await generator.GeneratePersonIdAsync();
-            return View(person);
+                if (ModelState.IsValid)
+                {
+                    _context.Add(person);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return View(person);
         }
 
         // GET: Person/Edit/5
