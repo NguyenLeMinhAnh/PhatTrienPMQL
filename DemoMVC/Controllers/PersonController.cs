@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DemoMVC.Data;
 using DemoMVC.Models;
+using DemoMVC.Models.Process;
 
 namespace DemoMVC.Controllers
 {
@@ -14,6 +15,7 @@ namespace DemoMVC.Controllers
     {
         // private readonly AutoGenerateId autoGenerateId;
         private readonly ApplicationDbContext _context;
+        private ExcelProcess _excelProcess = new ExcelProcess();
 
         public PersonController(ApplicationDbContext context)
         {
@@ -61,6 +63,7 @@ namespace DemoMVC.Controllers
                 PersonId = newPersonId,
                 FullName = string.Empty,
                 Email = string.Empty,
+                Address = string.Empty
             };
             return View(newPerson);
         }
@@ -74,26 +77,26 @@ namespace DemoMVC.Controllers
         public async Task<IActionResult> Create([Bind("PersonID,FullName,Email,Address")] Person person)
         {
             if (string.IsNullOrEmpty(person.PersonId))
-                {
-                    // Gán lại mã mới nếu bị null (phòng trường hợp người dùng không nhập được)
-                    var last = await _context.Persons
-                        .OrderByDescending(p => p.PersonId)
-                        .Select(p => p.PersonId)
-                        .FirstOrDefaultAsync();
+            {
+                // Gán lại mã mới nếu bị null (phòng trường hợp người dùng không nhập được)
+                var last = await _context.Persons
+                    .OrderByDescending(p => p.PersonId)
+                    .Select(p => p.PersonId)
+                    .FirstOrDefaultAsync();
 
-                    var lastId = last ?? "P0000";
-                    var autoGen = new AutoGenerateId();
-                    person.PersonId = autoGen.GenerateId(lastId);
-                }
+                var lastId = last ?? "P0000";
+                var autoGen = new AutoGenerateId();
+                person.PersonId = autoGen.GenerateId(lastId);
+            }
 
-                if (ModelState.IsValid)
-                {
-                    _context.Add(person);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
+            if (ModelState.IsValid)
+            {
+                _context.Add(person);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
 
-                return View(person);
+            return View(person);
         }
 
         // GET: Person/Edit/5
@@ -178,6 +181,67 @@ namespace DemoMVC.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        //Uploads/Excels
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Upload(IFormFile file)
+        {
+            if (file != null)
+            {
+                string fileExtension = Path.GetExtension(file.FileName);
+                if (fileExtension != ".xls" && fileExtension != ".xlsx")
+                {
+                    ModelState.AddModelError("", "Please choose excel file to upload!");
+                }
+                else
+                {
+                    // Đảm bảo thư mục tồn tại
+                    var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Excels");
+                        if (!Directory.Exists(folderPath))
+                        {
+                            Directory.CreateDirectory(folderPath);
+                        }
+
+                    //rename file when upload to server
+                    var fileName = DateTime.Now.ToString("yyyyMMdd_HHmmss") + fileExtension;
+                    var filePath = Path.Combine(folderPath, fileName);
+                    var fileLocation = new FileInfo(filePath).ToString();
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        //save file to server
+                        await file.CopyToAsync(stream);
+                        //read data from excel file fill DataTable
+                        var dt = _excelProcess.ExcelToDataTable(fileLocation);
+                        //using for loop to read data from dt
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            //create new Person object
+                            var ps = new Person()
+                            {
+
+                                FullName = string.Empty,
+                                Email = string.Empty,
+                                Address = string.Empty
+                            };
+
+                            //set value to attributes
+                            ps.PersonId = dt.Rows[i]["PersonId"].ToString();
+                            ps.FullName = dt.Rows[i]["FullName"].ToString();
+                            ps.Email = dt.Rows[i]["Email"].ToString();
+                            ps.Address = dt.Rows[i]["Address"].ToString();
+                           
+                            //add object to context
+                            _context.Add(ps);
+                        }
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+            }
+            return View();
         }
 
         private bool PersonExists(string id)
