@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DemoMVC.Data;
 using DemoMVC.Models;
 using DemoMVC.Models.Process;
+using OfficeOpenXml;
 
 namespace DemoMVC.Controllers
 {
@@ -242,6 +243,28 @@ namespace DemoMVC.Controllers
                 }
             }
             return View();
+        }
+
+        public IActionResult Download()
+        {
+            //Name the file when downloading
+            var fileName = "YourFileName" + ".xlsx";
+            using (ExcelPackage excelPackage = new ExcelPackage())
+            {
+                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Sheet 1");
+                //add some text to cell A1
+                worksheet.Cells["A1"].Value = "PersonId";
+                worksheet.Cells["B1"].Value = "FullName";
+                worksheet.Cells["C1"].Value = "Email";
+                worksheet.Cells["D1"].Value = "Address";
+                //get all Person
+                var personList = _context.Persons.ToList();
+                //fill data to worksheet
+                worksheet.Cells["A2"].LoadFromCollection(personList);
+                var stream = new MemoryStream(excelPackage.GetAsByteArray());
+                //download file
+                return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+            }
         }
 
         private bool PersonExists(string id)

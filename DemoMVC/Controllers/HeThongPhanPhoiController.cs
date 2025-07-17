@@ -46,7 +46,16 @@ namespace DemoMVC.Controllers
         // GET: HeThongPhanPhoi/Create
         public IActionResult Create()
         {
-            return View();
+            AutoGenerateId autoGenerateId = new AutoGenerateId();
+            var heThongPhanPhoi = _context.HeThongPhanPhoi.OrderByDescending(m => m.MaHTPP).FirstOrDefault();
+            var hethongphanphoiId = heThongPhanPhoi == null ? "HTPP0000" : heThongPhanPhoi.MaHTPP;
+            var newMaHTPP = autoGenerateId.GenerateId(hethongphanphoiId);
+            var newHeThongPhanPhoi = new HeThongPhanPhoi
+            {
+                MaHTPP = newMaHTPP,
+                TenHTPP = string.Empty
+            };
+            return View(newHeThongPhanPhoi);
         }
 
         // POST: HeThongPhanPhoi/Create
@@ -56,6 +65,14 @@ namespace DemoMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MaHTPP,TenHTPP")] HeThongPhanPhoi heThongPhanPhoi)
         {
+            if (string.IsNullOrWhiteSpace(heThongPhanPhoi.MaHTPP))
+            {
+                var last = await _context.HeThongPhanPhoi.OrderByDescending(m => m.MaHTPP)
+                .Select(m => m.MaHTPP).FirstOrDefaultAsync();
+                var lastId = last ?? "HTPP0000";
+                var autoGen = new AutoGenerateId();
+                heThongPhanPhoi.MaHTPP = autoGen.GenerateId(lastId);
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(heThongPhanPhoi);

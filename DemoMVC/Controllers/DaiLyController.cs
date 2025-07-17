@@ -22,8 +22,19 @@ namespace DemoMVC.Controllers
         // GET: DaiLy
         public async Task<IActionResult> Index()
         {
-            return View(await _context.DaiLy.ToListAsync());
+            var applicationDbContext = _context.DaiLy.Include(d => d.HTPP);
+            return View(await applicationDbContext.ToListAsync());
         }
+        // public async Task<IActionResult> Index2()
+        // {
+        //     var daiLyList = await _context.DaiLy.Include(d => d.HTPP).Select(DaiLy => DaiLyVM
+        //     {
+        //         MaDaiLy = d.MaDaiLy,
+        //         TenDaiLy = d.TenDaiLy,
+        //         TenHTPP = d.HTPP != null ? d.HTPP.TenHTPP : "Không có hệ thống phân phối"
+        //     }).ToListAsync();
+        //     return View(daiLyList);
+        // }
 
         // GET: DaiLy/Details/5
         public async Task<IActionResult> Details(string id)
@@ -46,7 +57,22 @@ namespace DemoMVC.Controllers
         // GET: DaiLy/Create
         public IActionResult Create()
         {
-            return View();
+            AutoGenerateId autoGenerateId = new AutoGenerateId();
+            var daiLy = _context.DaiLy.OrderByDescending(d => d.MaDaiLy).FirstOrDefault();
+            var dailyId = daiLy == null ? "DL000" : daiLy.MaDaiLy;
+            var newMaDaiLy = autoGenerateId.GenerateId(dailyId);
+            var newDaiLy = new DaiLy
+            {
+                MaDaiLy = newMaDaiLy,
+                TenDaiLy = string.Empty,
+                DiaChi = string.Empty,
+                NguoiDaiDien = string.Empty,
+                DienThoai = string.Empty,
+                MaHTPP = string.Empty
+
+            };
+            ViewData["MaHTPP"] = new SelectList(_context.HeThongPhanPhoi, "MaHTPP", "TenHTPP");
+            return View(newDaiLy);
         }
 
         // POST: DaiLy/Create
@@ -56,12 +82,22 @@ namespace DemoMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MaDaiLy,TenDaiLy,DiaChi,NguoiDaiDien,DienThoai,MaHTPP")] DaiLy daiLy)
         {
+            if (string.IsNullOrWhiteSpace(daiLy.MaDaiLy))
+            {
+                var last = await _context.DaiLy.OrderByDescending(d => d.MaDaiLy)
+                .Select(d => d.MaDaiLy).FirstOrDefaultAsync();
+                var lastId = last ?? "DL000";
+                var autoGen = new AutoGenerateId();
+                daiLy.MaDaiLy = autoGen.GenerateId(lastId);
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(daiLy);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["MaHTPP"] = new SelectList(_context.HeThongPhanPhoi, "MaHTPP", "MaHTPP", daiLy.MaHTPP);
             return View(daiLy);
         }
 
@@ -78,6 +114,7 @@ namespace DemoMVC.Controllers
             {
                 return NotFound();
             }
+             ViewData["MaHTPP"] = new SelectList(_context.HeThongPhanPhoi, "MaHTPP", "MaHTPP", daiLy.MaHTPP);
             return View(daiLy);
         }
 
@@ -113,6 +150,7 @@ namespace DemoMVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["MaHTPP"] = new SelectList(_context.HeThongPhanPhoi, "MaHTPP", "MaHTPP", daiLy.MaHTPP);
             return View(daiLy);
         }
 
@@ -125,6 +163,7 @@ namespace DemoMVC.Controllers
             }
 
             var daiLy = await _context.DaiLy
+                .Include(d => d.HTPP)
                 .FirstOrDefaultAsync(m => m.MaDaiLy == id);
             if (daiLy == null)
             {

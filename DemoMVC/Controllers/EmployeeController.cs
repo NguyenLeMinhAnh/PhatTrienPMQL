@@ -45,7 +45,19 @@ namespace DemoMVC.Controllers
         // GET: Employee/Create
         public IActionResult Create()
         {
-            return View();
+            AutoGenerateId autoGenerateId = new AutoGenerateId();
+            var employee = _context.Employee.OrderByDescending(e => e.EmployeeId).FirstOrDefault();
+            var employeeId = employee == null ? "E000" : employee.EmployeeId;
+            var newEmployeeId = autoGenerateId.GenerateId(employeeId);
+            var newEmployee = new Employee
+            {
+                EmployeeId = newEmployeeId,
+                FullName = string.Empty,
+                Email = string.Empty,
+                Address = string.Empty,
+                Age = 0
+            };
+            return View(newEmployee);
         }
 
         // POST: Employee/Create
@@ -55,22 +67,16 @@ namespace DemoMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("EmployeeId,Age,FullName,Email,Address")] Employee employee)
         {
+            if (string.IsNullOrWhiteSpace(employee.EmployeeId))
+            {
+                var last = await _context.Employee.OrderByDescending(e => e.EmployeeId)
+                .Select(e => e.EmployeeId).FirstOrDefaultAsync();
+                var lastId = last ?? "E000";
+                var autoGen = new AutoGenerateId();
+                employee.EmployeeId = autoGen.GenerateId(lastId);
+            }
             if (ModelState.IsValid)
             {
-                var last = await _context.Employee
-                .OrderByDescending(e => e.PersonId) //Sắp xếp các PersonId từ lớn đến nhỏ
-                .Select(e => e.PersonId) //Chọn cột PersonId
-                .FirstOrDefaultAsync(); //Lấy PersonId lớn nhất
-
-                int next = 1;
-                if (!string.IsNullOrEmpty(last) && last.Length >= 4)
-                {
-                    int.TryParse(last.Substring(1), out next);
-                    next++;
-                }
-
-                employee.PersonId = "P" + next.ToString("D4");
-
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
