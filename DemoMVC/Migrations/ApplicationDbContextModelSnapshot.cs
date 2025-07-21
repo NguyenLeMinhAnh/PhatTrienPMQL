@@ -14,7 +14,7 @@ namespace DemoMVC.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.6");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.7");
 
             modelBuilder.Entity("DemoMVC.Models.DaiLy", b =>
                 {
@@ -25,9 +25,6 @@ namespace DemoMVC.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DienThoai")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("HeThongPhanPhoiMaHTPP")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("MaHTPP")
@@ -41,7 +38,7 @@ namespace DemoMVC.Migrations
 
                     b.HasKey("MaDaiLy");
 
-                    b.HasIndex("HeThongPhanPhoiMaHTPP");
+                    b.HasIndex("MaHTPP");
 
                     b.ToTable("DaiLy");
                 });
@@ -97,11 +94,11 @@ namespace DemoMVC.Migrations
 
             modelBuilder.Entity("DemoMVC.Models.DaiLy", b =>
                 {
-                    b.HasOne("DemoMVC.Models.HeThongPhanPhoi", "HeThongPhanPhoi")
-                        .WithMany()
-                        .HasForeignKey("HeThongPhanPhoiMaHTPP");
+                    b.HasOne("DemoMVC.Models.HeThongPhanPhoi", "HTPP")
+                        .WithMany("DaiLy")
+                        .HasForeignKey("MaHTPP");
 
-                    b.Navigation("HeThongPhanPhoi");
+                    b.Navigation("HTPP");
                 });
 
             modelBuilder.Entity("DemoMVC.Models.Employee", b =>
@@ -111,6 +108,11 @@ namespace DemoMVC.Migrations
                         .HasForeignKey("DemoMVC.Models.Employee", "PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DemoMVC.Models.HeThongPhanPhoi", b =>
+                {
+                    b.Navigation("DaiLy");
                 });
 #pragma warning restore 612, 618
         }
