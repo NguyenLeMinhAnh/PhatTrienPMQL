@@ -731,3 +731,10 @@ D:\PhatTrienPMQL\DemoMVC\obj\Debug\net9.0\compressed\a3ygkwa5zy-2z0ns9nrw6.gz
 D:\PhatTrienPMQL\DemoMVC\obj\Debug\net9.0\compressed\nezrqnk58p-muycvpuwrr.gz
 D:\PhatTrienPMQL\DemoMVC\obj\Debug\net9.0\compressed\v0zgfp0y55-87fc7y1x7t.gz
 D:\PhatTrienPMQL\DemoMVC\obj\Debug\net9.0\compressed\yfc7ypekbg-mlv21k5csn.gz
+D:\PhatTrienPMQL\DemoMVC\bin\Debug\net9.0\Bogus.dll
+D:\PhatTrienPMQL\DemoMVC\bin\Debug\net9.0\BouncyCastle.Cryptography.dll
+D:\PhatTrienPMQL\DemoMVC\bin\Debug\net9.0\Castle.Core.dll
+D:\PhatTrienPMQL\DemoMVC\bin\Debug\net9.0\FakeItEasy.dll
+D:\PhatTrienPMQL\DemoMVC\bin\Debug\net9.0\MailKit.dll
+D:\PhatTrienPMQL\DemoMVC\bin\Debug\net9.0\MimeKit.dll
+D:\PhatTrienPMQL\DemoMVC\bin\Debug\net9.0\Moq.dll
